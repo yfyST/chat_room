@@ -1,6 +1,8 @@
+#include <boost/asio>
 #include <string>
 
 namespace chat {
+using boost::asio::ip::tcp;
 const uint32_t header_length = 4;
 const uint32_t max_body_length = 512;
 class chat_message {
