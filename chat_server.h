@@ -28,7 +28,8 @@ class chat_room {
 
 class chat_session : public chat_member {
  public:
-  chat_session(tcp::socket isocket) : socket_(std::move(isocket)) {
+  chat_session(tcp::socket isocket, chat_room room)
+      : socket_(std::move(isocket)) {
   }
   void run();
   void deliver(const chat_message &msg);
@@ -50,7 +51,7 @@ class chat_server {
  private:
   void do_accept();
   tcp::socket socket_;
-  tcp::accept accept_;
+  tcp::acceptor accept_;
   chat_room room_;
 };
 }  // namespace server

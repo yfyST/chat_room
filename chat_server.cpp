@@ -21,7 +21,7 @@ void chat_room::deliver(const chat_message &msg) {
   }
 }
 
-chat_session::chat_session(tcp::socket isocket, chat_room room_)
+chat_session::chat_session(tcp::socket isocket, chat_room room)
     : socket_(isocket), room_(room) {
 }
 
@@ -38,12 +38,12 @@ void chat_session::deliver(const chat_message &msg) {
     write_.push_back(msg);
   }
 }
-void chat_session::do_read_header() {
+void chat_session::read_header() {
   boost::asio::async_read(
       socket_, boost::asio::buffer(read_.data(), chat_message::header_length),
       [this, this](error_code er, uint32_t) {
         if (!er && read_.decode_header()) {
-          do_read_body();
+          read_body();
         } else {
           auto endpoint_it = socket_.remote_endpoint();
           room_.leave(this);
@@ -51,20 +51,20 @@ void chat_session::do_read_header() {
       });
 }
 
-void chat_session::do_read_body() {
+void chat_session::read_body() {
   boost::asio::async_read(
       socket_, boost::asio::buffer(read_.body(), read_.body_length_()),
       [this, this](error_code er, uint32_t) {
         if (!er) {
           this->deliver(read);
-          do_read_header();
+          read_header();
         } else {
           room_.leave(this);
         }
       });
 }
 
-void chat_session::do_write() {
+void chat_session::write() {
   boost::asio::async_write(
       socket_,
       boost::asio::buffer(write_.front().data(), write_.front().length()),
