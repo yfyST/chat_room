@@ -35,3 +35,4 @@ class chat_message {
   std::string data_;
 };
 }  // namespace chat
+
