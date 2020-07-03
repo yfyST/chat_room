@@ -22,12 +22,12 @@ void chat_room::deliver(const chat_message &msg) {
 }
 
 chat_session::chat_session(tcp::socket isocket, chat_room room)
-    : socket_(isocket), room_(room) {
+    : socket_(std ::move(isocket)), room_(room) {
 }
 
 void chat_session::run() {
   room_.join(this);
-  do_read_header();
+  read_header();
 }
 
 void chat_session::deliver(const chat_message &msg) {

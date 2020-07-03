@@ -28,9 +28,7 @@ class chat_room {
 
 class chat_session : public chat_member {
  public:
-  chat_session(tcp::socket isocket, chat_room room)
-      : socket_(std::move(isocket)) {
-  }
+  chat_session(tcp::socket isocket, chat_room room);
   void run();
   void deliver(const chat_message &msg);
 
