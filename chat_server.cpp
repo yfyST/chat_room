@@ -31,7 +31,7 @@ void chat_session::run() {
 }
 
 void chat_session::deliver(const chat_message &msg) {
-  if (write_.empty) {
+  if (write_.empty()) {
     write_.push_back(msg);
     write();
   } else {
