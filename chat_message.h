@@ -1,4 +1,4 @@
-#include <boost/asio>
+#include <boost/asio.hpp>
 #include <string>
 
 namespace chat {

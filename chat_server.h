@@ -1,4 +1,3 @@
-#include <boost/asio>
 #include <deque>
 #include <set>
 
@@ -6,7 +5,7 @@
 
 namespace chat {
 namespace server {
-using boost::asio::tcp;
+using boost::asio::ip::tcp;
 using boost::system::error_code;
 const uint32_t max_msg_len = 100;
 typedef std::deque<chat_message> message_deque;
