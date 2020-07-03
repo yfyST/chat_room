@@ -2,16 +2,16 @@
 
 namespace chat {
 namespace server {
-chat_room::join(chat_member *people) {
+void chat_room::join(chat_member *people) {
   all_people_.insert(people);
   for (auto &msg : rec_msgs_) {
     people->deliver(msg);
   }
 }
-chat_room::leave(chat_member *people) {
+void chat_room::leave(chat_member *people) {
   all_people_.erase(people);
 }
-chat_room::deliver(const chat_message &msg) {
+void chat_room::deliver(const chat_message &msg) {
   rec_msgs_.push_back(msg);
   if (rec_msgs_.size() > max_msg_len) {
     rec_msgs_.pop_front();
@@ -33,7 +33,7 @@ void chat_session::run() {
 void chat_session::deliver(const chat_message &msg) {
   if (write_.empty) {
     write_.push_back(msg);
-    do_write();
+    write();
   } else {
     write_.push_back(msg);
   }

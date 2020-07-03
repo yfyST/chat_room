@@ -28,7 +28,7 @@ class chat_room {
 
 class chat_session : public chat_member {
  public:
-  chat_session(tcp::socket isocket) : socket_(socket) {
+  chat_session(tcp::socket isocket) : socket_(isocket) {
   }
   void run();
   void deliver(const chat_message &msg);
@@ -45,7 +45,7 @@ class chat_session : public chat_member {
 };
 class chat_server {
  public:
-  chat_server();
+  chat_server(boost::asio::io_service &io_service, tcp::endpoint &endpoint);
 
  private:
   void do_accept();
