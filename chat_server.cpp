@@ -21,7 +21,7 @@ void chat_room::deliver(const chat_message &msg) {
   }
 }
 
-chat_session::chat_session(tcp::socket isocket, chat_room room)
+chat_session::chat_session(tcp::socket isocket, chat_room &room)
     : socket_(std ::move(isocket)), room_(room) {
 }
 

@@ -41,7 +41,7 @@ class chat_session : public chat_member,
   void write();
 
   tcp::socket socket_;
-  chat_room room_;
+  chat_room &room_;
   chat_message read_;
   message_deque write_;
 };
