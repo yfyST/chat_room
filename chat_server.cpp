@@ -40,8 +40,8 @@ void chat_session::deliver(const chat_message &msg) {
 }
 void chat_session::read_header() {
   boost::asio::async_read(
-      socket_, boost::asio::buffer(read_.data(), chat_message::header_length),
-      [this, this](error_code er, uint32_t) {
+      socket_, boost::asio::buffer(read_.data(), read_.header_length),
+      [this](error_code er, uint32_t) {
         if (!er && read_.decode_header()) {
           read_body();
         } else {
@@ -54,7 +54,7 @@ void chat_session::read_header() {
 void chat_session::read_body() {
   boost::asio::async_read(
       socket_, boost::asio::buffer(read_.body(), read_.body_length_()),
-      [this, this](error_code er, uint32_t) {
+      [this](error_code er, uint32_t) {
         if (!er) {
           this->deliver(read);
           read_header();
@@ -68,11 +68,11 @@ void chat_session::write() {
   boost::asio::async_write(
       socket_,
       boost::asio::buffer(write_.front().data(), write_.front().length()),
-      [this, this](error_code er, uint32_t) {
+      [this](error_code er, uint32_t) {
         if (!er) {
           write_.pop_front();
           if (!write_.empty()) {
-            do_write();
+            write();
           }
         } else {
           room_.leave(this);
@@ -89,7 +89,8 @@ void chat_server::do_accept() {
   accept_.async_accept(socket_, [this](error_code er, uint32_t) {
     if (!er) {
       auto endpoint = socket_.remote_endpoint();
-      chat_session newsession(socket_, room_);
+      chat_session newsession(std::move(socket_), room_);
+      newsession.run();
     }
     do_accept();
   })
