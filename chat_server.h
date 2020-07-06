@@ -5,6 +5,7 @@
 
 namespace chat {
 namespace server {
+class chat_member;
 typedef std::shared_ptr<chat_member> chat_participant_sptr;
 using boost::asio::ip::tcp;
 using boost::system::error_code;
