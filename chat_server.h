@@ -31,7 +31,7 @@ class chat_room {
 class chat_session : public chat_member,
                      public std::enable_shared_from_this<chat_session> {
  public:
-  chat_session(tcp::socket isocket, chat_room room);
+  chat_session(tcp::socket isocket, chat_room &room);
   void run();
   void deliver(const chat_message &msg);
 
