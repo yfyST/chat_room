@@ -6,7 +6,7 @@ chat_message::chat_message() : body_length_(0) {
 }
 bool chat_message::decode_header() {
   std::string head = data_.substr(0, header_length + 1);
-  body_length_ = std::stoi(head);
+  body_length_ = stoi(head);
   if (body_length_ > max_body_length) {
     return false;
   }
@@ -14,7 +14,7 @@ bool chat_message::decode_header() {
 }
 
 void chat_message::encode_header() {
-  std::string head = std::to_string(body_length_);
+  std::string head = to_string(body_length_);
   while (head.size() < header_length) {
     head = "0" + head;
   }

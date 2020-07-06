@@ -30,9 +30,12 @@ class chat_message {
     body_length_ = newlength > max_body_length ? max_body_length : newlength;
   }
 
+  uint32_t body_length() {
+    return body_length_;
+  }
+
  private:
   uint32_t body_length_;
   std::string data_;
 };
 }  // namespace chat
-

@@ -39,24 +39,24 @@ void chat_session::deliver(const chat_message &msg) {
   }
 }
 void chat_session::read_header() {
-  boost::asio::async_read(
-      socket_, boost::asio::buffer(read_.data(), read_.header_length),
-      [this](error_code er, uint32_t) {
-        if (!er && read_.decode_header()) {
-          read_body();
-        } else {
-          auto endpoint_it = socket_.remote_endpoint();
-          room_.leave(this);
-        }
-      });
+  boost::asio::async_read(socket_,
+                          boost::asio::buffer(read_.data(), header_length),
+                          [this](error_code er, uint32_t) {
+                            if (!er && read_.decode_header()) {
+                              read_body();
+                            } else {
+                              auto endpoint_it = socket_.remote_endpoint();
+                              room_.leave(this);
+                            }
+                          });
 }
 
 void chat_session::read_body() {
   boost::asio::async_read(
-      socket_, boost::asio::buffer(read_.body(), read_.body_length_()),
+      socket_, boost::asio::buffer(read_.body(), read_.body_length()),
       [this](error_code er, uint32_t) {
         if (!er) {
-          this->deliver(read);
+          this->deliver(read_);
           read_header();
         } else {
           room_.leave(this);

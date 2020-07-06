@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "chat_server.h"
-
+using boost::asio::ip::tcp;
 int main() {
   try {
     boost::asio::io_service my_io_service;
