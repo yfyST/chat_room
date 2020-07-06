@@ -8,7 +8,7 @@ void chat_room::join(chat_participant_sptr people) {
     people->deliver(msg);
   }
 }
-void chat_room::leave(chat_participant_sptr *people) {
+void chat_room::leave(chat_participant_sptr people) {
   all_people_.erase(people);
 }
 void chat_room::deliver(const chat_message &msg) {
@@ -54,7 +54,7 @@ void chat_session::read_header() {
 void chat_session::read_body() {
   boost::asio::async_read(
       socket_, boost::asio::buffer(read_.body(), read_.body_length()),
-      [this, shared_from_this()](error_code er, uint32_t) {
+      [this, std::move(shared_from_this())](error_code er, uint32_t) {
         if (!er) {
           this->deliver(read_);
           read_header();
