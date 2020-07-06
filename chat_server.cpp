@@ -2,7 +2,7 @@
 
 namespace chat {
 namespace server {
-void chat_room::join(chat_member *people) {
+void chat_room::join(people) {
   all_people_.insert(people);
   for (auto &msg : rec_msgs_) {
     people->deliver(msg);

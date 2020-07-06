@@ -5,6 +5,7 @@
 
 namespace chat {
 namespace server {
+typedef std::shared_ptr<chat_member> chat_participant_sptr;
 using boost::asio::ip::tcp;
 using boost::system::error_code;
 const uint32_t max_msg_len = 100;
@@ -17,16 +18,17 @@ class chat_member {
 
 class chat_room {
  public:
-  void join(chat_member *people);
-  void leave(chat_member *people);
+  void join(cchat_participant_sptr people);
+  void leave(chat_participant_sptr people);
   void deliver(const chat_message &msg);
 
  private:
   message_deque rec_msgs_;
-  std::set<chat_member *> all_people_;
+  std::set<chat_participant_sptr> all_people_;
 };
 
-class chat_session : public chat_member {
+class chat_session : public chat_member,
+                     public std::enable_shared_from_this<chat_session> {
  public:
   chat_session(tcp::socket isocket, chat_room room);
   void run();
