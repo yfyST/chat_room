@@ -39,9 +39,10 @@ void chat_session::deliver(const chat_message &msg) {
   }
 }
 void chat_session::read_header() {
+  auto self(shared_from_this());
   boost::asio::async_read(socket_,
                           boost::asio::buffer(read_.data(), header_length),
-                          [this, shared_from_this()](error_code er, uint32_t) {
+                          [this, self](error_code er, uint32_t) {
                             if (!er && read_.decode_header()) {
                               read_body();
                             } else {
@@ -52,9 +53,10 @@ void chat_session::read_header() {
 }
 
 void chat_session::read_body() {
+  auto self(shared_from_this());
   boost::asio::async_read(
       socket_, boost::asio::buffer(read_.body(), read_.body_length()),
-      [this, std::move(shared_from_this())](error_code er, uint32_t) {
+      [this, self](error_code er, uint32_t) {
         if (!er) {
           this->deliver(read_);
           read_header();
@@ -65,10 +67,11 @@ void chat_session::read_body() {
 }
 
 void chat_session::write() {
+  auto self(shared_from_this());
   boost::asio::async_write(
       socket_,
       boost::asio::buffer(write_.front().data(), write_.front().length()),
-      [this, shared_from_this()](error_code er, uint32_t) {
+      [this, self](error_code er, uint32_t) {
         if (!er) {
           write_.pop_front();
           if (!write_.empty()) {
