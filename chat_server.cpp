@@ -85,15 +85,16 @@ chat_server::chat_server(boost::asio::io_service &io_service,
     : accept_(io_service, endpoint), socket_(io_service) {
   do_accept();
 }
+
 void chat_server::do_accept() {
-  accept_.async_accept(socket_, [this](error_code er, uint32_t) {
+  accept_.async_accept(socket_, [this](error_code er) {
     if (!er) {
       auto endpoint = socket_.remote_endpoint();
       chat_session newsession(std::move(socket_), room_);
       newsession.run();
     }
     do_accept();
-  })
+  });
 }
 }  // namespace server
 }  // namespace chat
