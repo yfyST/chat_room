@@ -8,7 +8,7 @@ void chat_room::join(chat_participant_sptr people) {
     people->deliver(msg);
   }
 }
-void chat_room::leave(chat_member *people) {
+void chat_room::leave(chat_participant_sptr *people) {
   all_people_.erase(people);
 }
 void chat_room::deliver(const chat_message &msg) {
