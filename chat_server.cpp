@@ -46,7 +46,7 @@ void chat_session::read_header() {
                               read_body();
                             } else {
                               auto endpoint_it = socket_.remote_endpoint();
-                              room_.leave(this);
+                              room_.leave(shared_from_this());
                             }
                           });
 }
@@ -59,7 +59,7 @@ void chat_session::read_body() {
           this->deliver(read_);
           read_header();
         } else {
-          room_.leave(this);
+          room_.leave(shared_from_this());
         }
       });
 }
@@ -75,7 +75,7 @@ void chat_session::write() {
             write();
           }
         } else {
-          room_.leave(this);
+          room_.leave(shared_from_this());
         }
       });
 }
