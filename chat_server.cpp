@@ -26,7 +26,7 @@ chat_session::chat_session(tcp::socket isocket, chat_room room)
 }
 
 void chat_session::run() {
-  room_.join(this);
+  room_.join(shared_from_this());
   read_header();
 }
 
@@ -41,7 +41,7 @@ void chat_session::deliver(const chat_message &msg) {
 void chat_session::read_header() {
   boost::asio::async_read(socket_,
                           boost::asio::buffer(read_.data(), header_length),
-                          [this](error_code er, uint32_t) {
+                          [this, shared_from_this()](error_code er, uint32_t) {
                             if (!er && read_.decode_header()) {
                               read_body();
                             } else {
@@ -54,7 +54,7 @@ void chat_session::read_header() {
 void chat_session::read_body() {
   boost::asio::async_read(
       socket_, boost::asio::buffer(read_.body(), read_.body_length()),
-      [this](error_code er, uint32_t) {
+      [this, shared_from_this()](error_code er, uint32_t) {
         if (!er) {
           this->deliver(read_);
           read_header();
@@ -68,7 +68,7 @@ void chat_session::write() {
   boost::asio::async_write(
       socket_,
       boost::asio::buffer(write_.front().data(), write_.front().length()),
-      [this](error_code er, uint32_t) {
+      [this, shared_from_this()](error_code er, uint32_t) {
         if (!er) {
           write_.pop_front();
           if (!write_.empty()) {

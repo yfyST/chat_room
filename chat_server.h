@@ -19,7 +19,7 @@ class chat_member {
 
 class chat_room {
  public:
-  void join(cchat_participant_sptr people);
+  void join(chat_participant_sptr people);
   void leave(chat_participant_sptr people);
   void deliver(const chat_message &msg);
 
