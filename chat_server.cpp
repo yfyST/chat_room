@@ -54,8 +54,8 @@ void chat_session::read_header() {
 
 void chat_session::read_body() {
   auto self(shared_from_this());
-  boost::asio::async_read(
-      socket_, boost::asio::buffer(read_.body().c_str(), read_.body_length()),
+  sockek_.async_read_some(
+      boost::asio::buffer(read_.body().c_str(), read_.body_length()),
       [this, self](error_code er, uint32_t) {
         if (!er) {
           this->deliver(read_);
