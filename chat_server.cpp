@@ -40,22 +40,22 @@ void chat_session::deliver(const chat_message &msg) {
 }
 void chat_session::read_header() {
   auto self(shared_from_this());
-  boost::asio::async_read(socket_,
-                          boost::asio::buffer(read_.data(), header_length),
-                          [this, self](error_code er, uint32_t) {
-                            if (!er && read_.decode_header()) {
-                              read_body();
-                            } else {
-                              auto endpoint_it = socket_.remote_endpoint();
-                              room_.leave(shared_from_this());
-                            }
-                          });
+  boost::asio::async_read(
+      socket_, boost::asio::buffer(read_.data().c_str(), header_length),
+      [this, self](error_code er, uint32_t) {
+        if (!er && read_.decode_header()) {
+          read_body();
+        } else {
+          auto endpoint_it = socket_.remote_endpoint();
+          room_.leave(shared_from_this());
+        }
+      });
 }
 
 void chat_session::read_body() {
   auto self(shared_from_this());
   boost::asio::async_read(
-      socket_, boost::asio::buffer(read_.body(), read_.body_length()),
+      socket_, boost::asio::buffer(read_.body().c_str(), read_.body_length()),
       [this, self](error_code er, uint32_t) {
         if (!er) {
           this->deliver(read_);
@@ -68,19 +68,19 @@ void chat_session::read_body() {
 
 void chat_session::write() {
   auto self(shared_from_this());
-  boost::asio::async_write(
-      socket_,
-      boost::asio::buffer(write_.front().data(), write_.front().length()),
-      [this, self](error_code er, uint32_t) {
-        if (!er) {
-          write_.pop_front();
-          if (!write_.empty()) {
-            write();
-          }
-        } else {
-          room_.leave(shared_from_this());
-        }
-      });
+  boost::asio::async_write(socket_,
+                           boost::asio::buffer(write_.front().data().c_str(),
+                                               write_.front().length()),
+                           [this, self](error_code er, uint32_t) {
+                             if (!er) {
+                               write_.pop_front();
+                               if (!write_.empty()) {
+                                 write();
+                               }
+                             } else {
+                               room_.leave(shared_from_this());
+                             }
+                           });
 }
 
 chat_server::chat_server(boost::asio::io_service &io_service,

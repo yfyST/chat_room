@@ -9,7 +9,7 @@ int main() {
     chat::server::chat_server myserver(my_io_service, ep);
     my_io_service.run();
   } catch (std::exception &e) {
-    // std::cout << e << std::endl;
+    std::cout << e.what() << std::endl;
   }
   return 0;
 }
