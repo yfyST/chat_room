@@ -8,20 +8,23 @@ const uint32_t max_body_length = 512;
 class chat_message {
  public:
   chat_message();
-  std::string data() {
+
+  const char *data() const {
     return data_;
   }
-  const std::string data() const {
+
+  char *data() {
     return data_;
   }
-  uint32_t length() {
-    return data_.size();
+  uint32_t length() const {
+    return header_length + body_length_;
   }
-  const std::string body() const {
-    return data_.substr(header_length, -1);
+
+  const char *body() const {
+    return data_ + header_length;
   }
-  std::string body() {
-    return data_.substr(header_length, -1);
+  char *body() {
+    return data_ + header_length;
   }
 
   bool decode_header();
@@ -36,6 +39,6 @@ class chat_message {
 
  private:
   uint32_t body_length_;
-  std::string data_;
+  char data_[header_length + max_body_length];
 };
 }  // namespace chat
